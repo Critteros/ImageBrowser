@@ -14,10 +14,11 @@ public:
     MainWindow();
     ~MainWindow() override;
     
+private slots:
 
 private:
     QSplitter *centralWidget;
     void createToolBar();
     QSplitter* createLayout();
-    void setCurrentDirectory( const QString& dirName);
+
 };

@@ -1,4 +1,5 @@
 #include "MainWindow.hpp"
+#include "ToolBar.hpp"
 
 #include <QHBoxLayout>
 #include <QWidget>
@@ -16,38 +17,11 @@ MainWindow::MainWindow():
     centralWidget = createLayout();
     setCentralWidget(centralWidget);
     createToolBar();
+    setWindowIcon(QIcon("C:/Users/Alan/CLionProjects/ImageBrowser/img/AppIcon.png"));   // Hardcodowałem bo do embedowania trzeba qrc
 }
 
 void MainWindow::createToolBar() {
-
-    // Toolbar options
-    auto* toolBar = addToolBar("Toolbar");
-    toolBar->setMovable(false);
-    toolBar->setIconSize(toolBar->iconSize()*1.5);  // Scale Icons
-
-    // Adding Icons
-    const QIcon openDirIcon = this->style()->standardIcon(QStyle::SP_DirIcon);
-    const QIcon generateInfoFileIcon = this->style()->standardIcon(QStyle::SP_FileIcon);
-    const QIcon saveImageModifiedIcon = this->style()->standardIcon(QStyle::SP_DialogSaveButton);
-    const QIcon loadExternalDataIcon = this->style()->standardIcon(QStyle::SP_ArrowDown);
-
-    // Creating Actions
-    auto* openDirAction = new QAction(openDirIcon, "Choose Directory");
-    auto* generateInfoFileAction = new QAction(generateInfoFileIcon, "Generate Info File");
-    auto* saveImageModifiedAction = new QAction(saveImageModifiedIcon, "Save Image with Parameters");
-    auto* loadExternalDataAction = new QAction(loadExternalDataIcon, "Load External Data");
-//    newAct->setShortcuts(QKeySequence::New);
-//    newAct->setStatusTip(tr("Create a new file"));
-//    connect(newAct, &QAction::triggered, this, &MainWindow::newFile);
-
-    // Connecting Actions to methods
-    //TODO: Implement
-
-    // Adding Actions
-    toolBar->addAction(openDirAction);
-    toolBar->addAction(generateInfoFileAction);
-    toolBar->addAction(saveImageModifiedAction);
-    toolBar->addAction(loadExternalDataAction);
+    auto* toolBar = new ToolBar(this);
 }
 
 QSplitter* MainWindow::createLayout() {
@@ -65,8 +39,6 @@ QSplitter* MainWindow::createLayout() {
     return layout;
 }
 
-void MainWindow::setCurrentDirectory(const QString &dirName) {
 
-}
 
 MainWindow::~MainWindow() = default;
