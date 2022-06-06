@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QSplitter>
 
 #include "DebugHelpers.hpp"
 #include "MetadataWidget.hpp"
@@ -11,10 +12,12 @@ class MainWindow: public QMainWindow
 
 public:
     MainWindow();
-
     ~MainWindow() override;
-
+    
 
 private:
-    MetadataWidget* m_metadataWidget = nullptr;
+    QSplitter *centralWidget;
+    void createToolBar();
+    QSplitter* createLayout();
+    void setCurrentDirectory( const QString& dirName);
 };

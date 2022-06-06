@@ -1,4 +1,4 @@
-#include "MetadataWidget.hpp"
+ #include "MetadataWidget.hpp"
 
 #include <QVBoxLayout>
 
