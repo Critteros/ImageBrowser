@@ -8,13 +8,9 @@ CustomIconProvider::CustomIconProvider(QObject *parent) : QFileIconProvider(), Q
 
 QIcon CustomIconProvider::icon(const QFileInfo &info) const {
 
-//    qDebug() << "Requesting icon for" << info.fileName();
-
+    // Handle icons for special folders
     if (info.fileName() == ".." || info.fileName() == ".") {
-
         return QFileIconProvider::icon(QFileInfo(info.absoluteFilePath()));
-
-//        return {QFileIconProvider::icon(QFileIconProvider::Folder).pixmap(m_thumbSize)};
     }
 
     if (m_thumbExtensions.contains(info.completeSuffix().toLower())) {
@@ -22,14 +18,11 @@ QIcon CustomIconProvider::icon(const QFileInfo &info) const {
         const auto filePath = info.filePath();
         QPixmap pixmap(m_thumbSize);
         pixmap.load(filePath);
-//        pixmap = pixmap.scaled(m_thumbSize, Qt::KeepAspectRatio);
-//        pixmap.scaledToWidth(m_thumbSize.width());
-
 
         qDebug() << pixmap.size();
         return {pixmap};
     }
-//    qDebug() << QFileIconProvider::icon(info).availableSizes();
+
     return QFileIconProvider::icon(info);
 }
 

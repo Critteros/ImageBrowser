@@ -1,18 +1,14 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QFileSystemModel>
-#include <QListView>
 #include <QSplitter>
-#include <QLabel>
-#include <QStackedWidget>
 #include <QTableView>
 
 
 #include "MetadataWidget.hpp"
 #include "CustomIconProvider.hpp"
 #include "ClickableLabel.hpp"
-#include "ImageViewer.hpp"
+#include "FileExplorer.hpp"
 
 
 #include "DebugHelpers.hpp"
@@ -26,19 +22,17 @@ public:
     ~MainWindow() override;
 
 private:
-    void setupFileView();
-
-    void setupFileModel();
-
+    // Constants
+    inline static const QSize MAIN_WIDGET_MIN_SIZE = QSize(800, 600);
+    inline static const QSize FILE_ICON_SIZE = QSize(128, 128);
 
 private:
-    QFileSystemModel *m_filesystemModel = nullptr;
-    QListView *m_fileView = nullptr;
+    // Layout organizer
     QSplitter *m_splitter = nullptr;
+
+    // Components
+    FileExplorer *m_fileExplorer = nullptr;
+
+
     QTableView *m_metadataView = nullptr;
-    QStackedWidget *m_stackedWidget = nullptr;
-    ClickableLabel *m_imageDisplay = nullptr;
-
-
-    CustomIconProvider *m_iconProvider = nullptr;
 };

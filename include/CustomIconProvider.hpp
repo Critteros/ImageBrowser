@@ -13,11 +13,13 @@ public:
 
     [[nodiscard]] QIcon icon(const QFileInfo &info) const override;
 
-    void setAllowedExtensions(const QStringList &extensions);
 
 public slots:
 
     void onIconSizeChange(const QSize &newSize);
+
+    void setAllowedExtensions(const QStringList &extensions);
+
 
 private:
     QSize m_thumbSize{60, 60};

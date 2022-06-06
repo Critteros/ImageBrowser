@@ -7,7 +7,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 
-
 find_package(Qt6 COMPONENTS
         Core
         Gui
@@ -16,6 +15,8 @@ find_package(Qt6 COMPONENTS
 
 qt_standard_project_setup()
 
+
+#find_package(ZLIB)
 include_directories("include")
 
 file(GLOB includes include/*.hpp)
