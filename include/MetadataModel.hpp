@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cert-err58-cpp"
 #pragma once
 
 
@@ -86,5 +84,3 @@ private:
     PresentationDetails m_presentationDetails;
 };
 
-
-#pragma clang diagnostic pop
