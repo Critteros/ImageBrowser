@@ -1,5 +1,6 @@
 #include "MetadataModel.hpp"
 
+#include <QFont>
 
 MetadataModel::MetadataModel(QObject *parent) : QAbstractTableModel(parent) {
 
@@ -31,6 +32,15 @@ QVariant MetadataModel::data(const QModelIndex &index, int role) const {
             return dataForDisplay(index);
         }
 
+        case Qt::FontRole: {
+            if (index.row() == m_presentationDetails.exifLabelLocation ||
+                index.row() == m_presentationDetails.iptcLabelLocation) {
+                QFont font;
+                font.setBold(true);
+                return font;
+            } else return {};
+        }
+
         default:
             return {};
     }
@@ -39,7 +49,9 @@ QVariant MetadataModel::data(const QModelIndex &index, int role) const {
 
 void MetadataModel::clearStoredMetadata() {
     qDebug() << "Clearing stored metadata";
+    beginResetModel();
     m_metadata.clear();
+    endResetModel();
 
 }
 
@@ -56,9 +68,10 @@ MetadataModel::ImageMetadata MetadataModel::loadImageMetadata(const QString &fil
     // There extract metaata
     auto metadataContainer = MetadataModel::ImageMetadata();
 
+    // TUTAJ LOGIKA Z ŁADOWANIEM
     for (int i = 0; i < 10; i++) {
         metadataContainer.addExif(QString("EXIF-KEY-%1").arg(i), QString("EXIF-VALUE-%1").arg(i));
-        metadataContainer.addIpct(QString("IPTC-KEY-%1").arg(i), QString("IPCT-VALUE-%1").arg(i));
+        metadataContainer.addIptc(QString("IPTC-KEY-%1").arg(i), QString("IPTC-VALUE-%1").arg(i));
 
     }
 
@@ -77,7 +90,7 @@ void MetadataModel::calculatePresentationDetails() {
         container.exifLabelLocation = indexer++;
         container.exifDataStart = indexer++;
 
-        indexer += static_cast<decltype(indexer)>(exifCount);
+        indexer += static_cast<decltype(indexer)>(exifCount) - 1;
         container.exifDataEnd = indexer;
     }
 
@@ -85,7 +98,7 @@ void MetadataModel::calculatePresentationDetails() {
         container.iptcLabelLocation = indexer++;
         container.iptcDataStart = indexer++;
 
-        indexer += static_cast<decltype(indexer)>(iptcCount);
+        indexer += static_cast<decltype(indexer)>(iptcCount) - 1;
         container.iptcDataEnd = indexer;
     }
 
@@ -113,10 +126,39 @@ QVariant MetadataModel::dataForDisplay(const QModelIndex &index) const {
         return MetadataModel::PresentationDetails::EXIF_LABEL;
     }
 
-    return QString("Row%1, Column%2")
-            .arg(index.row() + 1)
-            .arg(index.column() + 1);
+    //If to display exif
+    if (row >= m_presentationDetails.exifDataStart && row < m_presentationDetails.exifDataEnd) {
+        const auto accessIndex = row - m_presentationDetails.exifDataStart;
+        if (field == MetadataModel::FIELD_KEY) {
+            return m_metadata.EXIF_metadata[accessIndex].first;
+        }
+        if (field == MetadataModel::FIELD_VALUE) {
+            return m_metadata.EXIF_metadata[accessIndex].second;
+        }
+    }
 
+    //If to display IPTC
+    if (row >= m_presentationDetails.iptcDataStart && row < m_presentationDetails.iptcDataEnd) {
+        const auto accessIndex = row - m_presentationDetails.iptcDataStart;
+        if (field == MetadataModel::FIELD_KEY) {
+            return m_metadata.IPTC_metadata[accessIndex].first;
+        }
+        if (field == MetadataModel::FIELD_VALUE) {
+            return m_metadata.IPTC_metadata[accessIndex].second;
+        }
+    }
+
+
+    return QString("ERROR");
+}
+
+Qt::ItemFlags MetadataModel::flags(const QModelIndex &index) const {
+    if (index.row() == m_presentationDetails.iptcLabelLocation ||
+        index.row() == m_presentationDetails.exifLabelLocation) {
+        return Qt::NoItemFlags;
+    }
+
+    return QAbstractTableModel::flags(index);
 }
 
 
@@ -125,7 +167,7 @@ MetadataModel::ImageMetadata &MetadataModel::ImageMetadata::addExif(const QStrin
     return *this;
 }
 
-MetadataModel::ImageMetadata &MetadataModel::ImageMetadata::addIpct(const QString &key, const QString &value) {
+MetadataModel::ImageMetadata &MetadataModel::ImageMetadata::addIptc(const QString &key, const QString &value) {
     IPTC_metadata << QPair<QString, QString>(key, value);
     return *this;
 }

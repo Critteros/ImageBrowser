@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cert-err58-cpp"
 #pragma once
 
 
@@ -22,7 +24,7 @@ Q_OBJECT
 
         ImageMetadata &addExif(const QString &key, const QString &value);
 
-        ImageMetadata &addIpct(const QString &key, const QString &value);
+        ImageMetadata &addIptc(const QString &key, const QString &value);
 
         ImageMetadata &clear();
 
@@ -40,8 +42,8 @@ Q_OBJECT
 
     struct PresentationDetails {
         using index_t = int;
-        inline static const QString EXIF_LABEL = "Exif";
-        inline static const QString IPTC_LABEL = "Iptc";
+        inline static const QString EXIF_LABEL = "EXIF";
+        inline static const QString IPTC_LABEL = "IPTC";
         inline static const index_t INVALID_INDEX = -1;
 
         index_t exifLabelLocation = INVALID_INDEX;
@@ -60,6 +62,8 @@ public:
     [[nodiscard]] int columnCount(const QModelIndex &parent) const override;
 
     [[nodiscard]] QVariant data(const QModelIndex &index, int role) const override;
+
+    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     static ImageMetadata loadImageMetadata(const QString &filepath);
 
@@ -82,3 +86,5 @@ private:
     PresentationDetails m_presentationDetails;
 };
 
+
+#pragma clang diagnostic pop

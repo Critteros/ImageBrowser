@@ -3,6 +3,7 @@
 #include <QHeaderView>
 #include <QImageReader>
 #include <QFileInfo>
+#include <QAbstractItemView>
 
 MetadataWidget::MetadataWidget(QWidget *parent) : QWidget(parent) {
 
@@ -28,6 +29,7 @@ void MetadataWidget::setupViews() {
     m_tableView->verticalHeader()->setDefaultSectionSize(m_tableView->verticalHeader()->minimumSectionSize());
     m_tableView->horizontalHeader()->setVisible(false);
     m_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     m_tableView->setTabKeyNavigation(false);
     m_tableView->setShowGrid(false);
