@@ -15,8 +15,10 @@ find_package(Qt6 COMPONENTS
 
 qt_standard_project_setup()
 
-
-#find_package(ZLIB)
+#find_package(exiv2 REQUIRED CONFIG NAMES exiv2)
+set(ZLIB_ROOT "${CMAKE_CURRENT_LIST_DIR}/dependencies/zlib")
+find_package(ZLIB REQUIRED)
+add_subdirectory(dependencies)
 include_directories("include")
 
 file(GLOB includes include/*.hpp)
@@ -28,7 +30,12 @@ target_link_libraries(ImageBrowser PRIVATE
         Qt::Core
         Qt::Gui
         Qt::Widgets
+        dependencies
+        ZLIB::ZLIB
+        Psapi.lib
         )
+
+target_link_options(ImageBrowser PRIVATE /FORCE:MULTIPLE)
 
 #target_compile_definitions(ImageBrowser PRIVATE $<$<CONFIG:Debug>:_CRTDBG_MAP_ALLOC>>)
 
