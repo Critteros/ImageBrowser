@@ -29,6 +29,10 @@ public slots:
 
     void setIconSize(const QSize &newSize);
 
+signals:
+
+    void fileClicked(const QString &filePath);
+
 private:
     // Models and stuff close to them
     QFileSystemModel *m_filesystemModel = nullptr;

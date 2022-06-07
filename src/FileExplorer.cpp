@@ -13,6 +13,7 @@ FileExplorer::FileExplorer(QWidget *parent) : QStackedWidget(parent) {
     // Start filesystem model at current working directory (.exe dir)
     m_filesystemModel->setRootPath(QDir::currentPath());
 
+
 }
 
 /**
@@ -60,6 +61,11 @@ void FileExplorer::setupViews() {
                 setCurrentWidget(m_imageLabel);
             }
         }
+    });
+
+    QObject::connect(m_listView, &QListView::clicked, [this](const QModelIndex &index) {
+        const auto path = index.data(QFileSystemModel::FilePathRole).toString();
+        emit fileClicked(QFileInfo(path).absoluteFilePath());
     });
 }
 

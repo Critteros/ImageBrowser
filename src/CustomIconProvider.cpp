@@ -18,8 +18,7 @@ QIcon CustomIconProvider::icon(const QFileInfo &info) const {
         const auto filePath = info.filePath();
         QPixmap pixmap(m_thumbSize);
         pixmap.load(filePath);
-
-        qDebug() << pixmap.size();
+        
         return {pixmap};
     }
 

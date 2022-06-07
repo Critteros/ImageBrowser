@@ -32,7 +32,7 @@ private:
 
     // Components
     FileExplorer *m_fileExplorer = nullptr;
+    MetadataWidget *m_metadataWidget = nullptr;
 
 
-    QTableView *m_metadataView = nullptr;
 };

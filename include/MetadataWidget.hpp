@@ -1,18 +1,41 @@
 #pragma once
 
 #include <QWidget>
-#include <QLabel>
-#include <QGroupBox>
+#include <QTableView>
+#include <QVBoxLayout>
 
 
-class MetadataWidget: public QWidget
-{
-    Q_OBJECT
+#include "MetadataModel.hpp"
+
+#include "DebugHelpers.hpp"
+
+
+class MetadataWidget : public QWidget {
+Q_OBJECT
+
 
 public:
-     explicit MetadataWidget(QWidget* parent = nullptr);
+    explicit MetadataWidget(QWidget *parent = nullptr);
+
+public slots:
+
+    void onFileCLick(const QString &filepath);
+
 private:
-    QLabel* m_textLabel = nullptr;
-    QGroupBox* m_groupBox = nullptr;
+    void setupModels();
+
+    void setupViews();
+
+private:
+
+    // Organizers
+    QVBoxLayout *m_layout = nullptr;
+
+    //Models
+    MetadataModel *m_metadataModel = nullptr;
+
+    // Views
+    QTableView *m_tableView = nullptr;
+
 
 };
