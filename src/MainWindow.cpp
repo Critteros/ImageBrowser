@@ -7,6 +7,8 @@
 
 MainWindow::MainWindow() : QMainWindow() {
 
+    setWindowIcon(QIcon(":/img/AppIcon.png"));
+
     m_splitter = new QSplitter(Qt::Horizontal);
     m_toolbar = new ToolBar(this);
 

@@ -24,7 +24,7 @@ include_directories("include")
 file(GLOB includes include/*.hpp)
 file(GLOB sources src/*.cpp)
 
-qt_add_executable(ImageBrowser ${includes} ${sources})
+qt_add_executable(ImageBrowser imagebrowser.qrc ${includes} ${sources})
 #qt_add_executable(ImageBrowser src/main.cpp)
 target_link_libraries(ImageBrowser PRIVATE
         Qt::Core
