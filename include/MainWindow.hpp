@@ -9,6 +9,7 @@
 #include "CustomIconProvider.hpp"
 #include "ClickableLabel.hpp"
 #include "FileExplorer.hpp"
+#include "ToolBar.hpp"
 
 
 #include "DebugHelpers.hpp"
@@ -29,6 +30,7 @@ private:
 private:
     // Layout organizer
     QSplitter *m_splitter = nullptr;
+    ToolBar *m_toolbar = nullptr;
 
     // Components
     FileExplorer *m_fileExplorer = nullptr;

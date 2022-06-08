@@ -1,17 +1,15 @@
 
 #include "ToolBar.hpp"
 #include "MainWindow.hpp"
-#include "QStyle"
+#include <QDebug>
 
 
 ToolBar::ToolBar(MainWindow* mainWindow)
     : toolBar{mainWindow->addToolBar("ToolBar")}{
     // Toolbar options
     toolBar->setMovable(false);
-    toolBar->setIconSize(toolBar->iconSize()*1.5);  // Scale Icons
-//    toolBar->setStyleSheet("QToolBar { spacing: 20px; background-color:  }");
+//    toolBar->setIconSize(toolBar->iconSize()*1.5);  // Scale Icons
     toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-//    mainWindow->setStyleSheet("QToolButton {color: ; }");
 
     // Adding Icons
     const QIcon openDirIcon = mainWindow->style()->standardIcon(QStyle::SP_DirIcon);
@@ -42,23 +40,22 @@ ToolBar::ToolBar(MainWindow* mainWindow)
 }
 
 
-#include <iostream> // For debugging
-#define LOG(X) std::cout<<(X)<<std::endl;
+//TODO: Implement methods
 
 void ToolBar::openDir() {
-    LOG("OPEN DIR")
+    qDebug() << "Open Dir";
 }
 
 void ToolBar::generateInfoFile() {
-    LOG("GENERATE INFO FILE ")
+    qDebug() << "Generate info File";
 }
 
 void ToolBar::saveImageModified() {
-    LOG("SAVE IMAGE MODIFIED")
+    qDebug() << "Save image modified";
 }
 
 void ToolBar::loadExternalData() {
-    LOG("LOAD EXTERNAL DATA")
+    qDebug() << "Load external data";
 }
 
 ToolBar::~ToolBar() = default;
