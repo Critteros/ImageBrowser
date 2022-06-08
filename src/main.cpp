@@ -11,8 +11,9 @@ int main(int argc, char* argv[])
 
     QApplication application(argc, argv);
     MainWindow mainWindow;
+    mainWindow.resize(800, 600);
     mainWindow.show();
 
-
-    return QApplication::exec();
+    int result = QApplication::exec();
+    return result;
 }
