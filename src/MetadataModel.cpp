@@ -1,6 +1,10 @@
 #include "MetadataModel.hpp"
 
 #include <QFont>
+#include <QDebug>
+#include <exiv2/exiv2.hpp>
+#include <sstream>
+#include <assert.h>
 
 MetadataModel::MetadataModel(QObject *parent) : QAbstractTableModel(parent) {
 
@@ -65,14 +69,40 @@ void MetadataModel::loadAndParseImage(const QString &filepath) {
 }
 
 MetadataModel::ImageMetadata MetadataModel::loadImageMetadata(const QString &filepath) {
-    // There extract metaata
+    // There extract metadata
     auto metadataContainer = MetadataModel::ImageMetadata();
 
-    // TUTAJ LOGIKA Z ŁADOWANIEM
-    for (int i = 0; i < 10; i++) {
-        metadataContainer.addExif(QString("EXIF-KEY-%1").arg(i), QString("EXIF-VALUE-%1").arg(i));
-        metadataContainer.addIptc(QString("IPTC-KEY-%1").arg(i), QString("IPTC-VALUE-%1").arg(i));
+    auto image = Exiv2::ImageFactory::open(filepath.toStdString());
+    assert(image.get() != nullptr);
+    image->readMetadata();
+    std::stringstream value;
 
+    // Exif
+    auto& exifData = image->exifData();
+    if (exifData.empty()) {
+        qDebug() << "Empty EXIF";
+        metadataContainer.addExif("No Exif data found in the file", "");
+    }
+
+    auto endExif = exifData.end();
+    for (auto i = exifData.begin(); i != endExif; ++i) {
+        value << i->value();
+        metadataContainer.addExif(QString::fromStdString(i->key()), QString::fromStdString(value.str()));
+        value.clear();
+    }
+
+    // Iptc
+    auto& iptcData = image->iptcData();
+    if (iptcData.empty()) {
+        qDebug() << "Empty IPTC";
+        metadataContainer.addIptc("No Iptc data found in the file", "");
+    }
+
+    auto endIptc = iptcData.end();
+    for (auto i = iptcData.begin(); i != endIptc; ++i) {
+        value << i->value();
+        metadataContainer.addExif(QString::fromStdString(i->key()), QString::fromStdString(value.str()));
+        value.clear();
     }
 
     return metadataContainer;
