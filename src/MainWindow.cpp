@@ -11,13 +11,22 @@
 #include <QStackedWidget>
 #include <QLabel>
 #include <QListView>
+#include <QDebug>
+#include <QPalette>
+#include <QColor>
+
+
+#include <iostream>
 
 MainWindow::MainWindow():
     QMainWindow(), centralWidget{nullptr} {
+    QPalette mainPalette(QColor("#f5edf0"), QColor("#424c55")); // IDK ale działa (Potem pobawie się w ładny wygląd)
+    setPalette(mainPalette);
     centralWidget = createLayout();
     setCentralWidget(centralWidget);
     createToolBar();
-    setWindowIcon(QIcon("C:/Users/Alan/CLionProjects/ImageBrowser/img/AppIcon.png"));   // Hardcodowałem bo do embedowania trzeba qrc
+    setWindowIcon(QIcon(":/img/AppIcon.png"));
+
 }
 
 void MainWindow::createToolBar() {

@@ -4,7 +4,6 @@
 #include <QSplitter>
 
 #include "DebugHelpers.hpp"
-#include "MetadataWidget.hpp"
 
 class MainWindow: public QMainWindow
 {

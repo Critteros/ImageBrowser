@@ -9,9 +9,9 @@ ToolBar::ToolBar(MainWindow* mainWindow)
     // Toolbar options
     toolBar->setMovable(false);
     toolBar->setIconSize(toolBar->iconSize()*1.5);  // Scale Icons
-    toolBar->setStyleSheet("QToolBar { spacing: 20px; background-color: #424c55 }");
+//    toolBar->setStyleSheet("QToolBar { spacing: 20px; background-color:  }");
     toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    mainWindow->setStyleSheet("QToolButton {color: #f5edf0; }");
+//    mainWindow->setStyleSheet("QToolButton {color: ; }");
 
     // Adding Icons
     const QIcon openDirIcon = mainWindow->style()->standardIcon(QStyle::SP_DirIcon);

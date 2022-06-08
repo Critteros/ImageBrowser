@@ -9,7 +9,7 @@ class ToolBar : public QObject{
     Q_OBJECT
 
 public:
-    ToolBar(MainWindow* mainWindow);
+    explicit ToolBar(MainWindow* mainWindow);
     ~ToolBar() override;
 
 private slots:
