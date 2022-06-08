@@ -1,53 +1,33 @@
 #include "MainWindow.hpp"
-#include "ToolBar.hpp"
 
-#include <QHBoxLayout>
-#include <QWidget>
-#include <QToolBar>
-#include <QIcon>
-#include <QAction>
-#include <QSplitter>
-#include <QTableView>
-#include <QStackedWidget>
-#include <QLabel>
-#include <QListView>
-#include <QDebug>
-#include <QPalette>
-#include <QColor>
 
+#include "FileExplorer.hpp"
 
 #include <iostream>
+#include <exiv2/exiv2.hpp>
 
-MainWindow::MainWindow():
-    QMainWindow(), centralWidget{nullptr} {
+MainWindow::MainWindow() : QMainWindow() {
+
+    m_splitter = new QSplitter(Qt::Horizontal);
+
+    m_fileExplorer = new FileExplorer;
+    m_metadataWidget = new MetadataWidget;
+
+    m_splitter->addWidget(m_fileExplorer);
+    m_splitter->addWidget(m_metadataWidget);
+    m_splitter->setStretchFactor(0, 4);
+    m_splitter->setStretchFactor(1, 2);
+
     QPalette mainPalette(QColor("#f5edf0"), QColor("#424c55")); // IDK ale działa (Potem pobawie się w ładny wygląd)
     setPalette(mainPalette);
-    centralWidget = createLayout();
-    setCentralWidget(centralWidget);
-    createToolBar();
-    setWindowIcon(QIcon(":/img/AppIcon.png"));
 
+    m_splitter->setMinimumSize(MAIN_WIDGET_MIN_SIZE);
+
+    QObject::connect(m_fileExplorer, &FileExplorer::fileClicked, m_metadataWidget, &MetadataWidget::onFileCLick);
+
+
+    setCentralWidget(m_splitter);
 }
-
-void MainWindow::createToolBar() {
-    auto* toolBar = new ToolBar(this);
-}
-
-QSplitter* MainWindow::createLayout() {
-    auto* layout = new QSplitter(this);
-    auto* metadataView = new QTableView();
-    auto* leftPanel = new QStackedWidget();
-    auto* imageView = new QLabel();
-    auto* fileSystemView = new QListView();
-
-    // TODO: Change to customized views
-    leftPanel->addWidget(imageView);
-    leftPanel->addWidget(fileSystemView);
-    layout->addWidget(leftPanel);
-    layout->addWidget(metadataView);
-    return layout;
-}
-
 
 
 MainWindow::~MainWindow() = default;
