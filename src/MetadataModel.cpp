@@ -4,7 +4,6 @@
 #include <QDebug>
 #include <exiv2/exiv2.hpp>
 #include <sstream>
-#include <assert.h>
 
 MetadataModel::MetadataModel(QObject *parent) : QAbstractTableModel(parent) {
 
