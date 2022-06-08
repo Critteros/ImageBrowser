@@ -4,8 +4,8 @@
 #include <QDebug>
 
 
-ToolBar::ToolBar(MainWindow* mainWindow)
-    : toolBar{mainWindow->addToolBar("ToolBar")}{
+ToolBar::ToolBar(MainWindow *mainWindow)
+        : QObject(mainWindow), toolBar{mainWindow->addToolBar("ToolBar")} {
     // Toolbar options
     toolBar->setMovable(false);
 //    toolBar->setIconSize(toolBar->iconSize()*1.5);  // Scale Icons
@@ -19,10 +19,10 @@ ToolBar::ToolBar(MainWindow* mainWindow)
 
 
     // Creating Actions
-    auto* openDirAction = new QAction(openDirIcon, "Choose Directory");
-    auto* generateInfoFileAction = new QAction(generateInfoFileIcon, "Generate Info File");
-    auto* saveImageModifiedAction = new QAction(saveImageModifiedIcon, "Save Image with Parameters");
-    auto* loadExternalDataAction = new QAction(loadExternalDataIcon, "Load External Data");
+    auto *openDirAction = new QAction(openDirIcon, "Choose Directory", this);
+    auto *generateInfoFileAction = new QAction(generateInfoFileIcon, "Generate Info File", this);
+    auto *saveImageModifiedAction = new QAction(saveImageModifiedIcon, "Save Image with Parameters", this);
+    auto *loadExternalDataAction = new QAction(loadExternalDataIcon, "Load External Data", this);
 //    newAct->setShortcuts(QKeySequence::New);
 //    newAct->setStatusTip(tr("Create a new file"));
 
