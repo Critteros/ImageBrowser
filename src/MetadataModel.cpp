@@ -3,8 +3,6 @@
 #include <QFont>
 #include <QDebug>
 #include <exiv2/exiv2.hpp>
-#include <sstream>
-#include <cassert>
 
 MetadataModel::MetadataModel(QObject *parent) : QAbstractTableModel(parent) {
 
@@ -75,7 +73,6 @@ MetadataModel::ImageMetadata MetadataModel::loadImageMetadata(const QString &fil
     auto image = Exiv2::ImageFactory::open(filepath.toStdString());
     assert(image.get() != nullptr);
     image->readMetadata();
-    std::stringstream value;
 
     // Exif
     auto& exifData = image->exifData();
@@ -86,9 +83,8 @@ MetadataModel::ImageMetadata MetadataModel::loadImageMetadata(const QString &fil
 
     auto endExif = exifData.end();
     for (auto i = exifData.begin(); i != endExif; ++i) {
-        value << i->value();
-        metadataContainer.addExif(QString::fromStdString(i->key()), QString::fromStdString(value.str()));
-        value.str("");
+        metadataContainer.addExif(QString::fromStdString(i->key()),
+                                  QString::fromStdString(i->value().toString()));
     }
 
     // Iptc
@@ -100,9 +96,8 @@ MetadataModel::ImageMetadata MetadataModel::loadImageMetadata(const QString &fil
 
     auto endIptc = iptcData.end();
     for (auto i = iptcData.begin(); i != endIptc; ++i) {
-        value << i->value();
-        metadataContainer.addIptc(QString::fromStdString(i->key()), QString::fromStdString(value.str()));
-        value.str("");
+        metadataContainer.addIptc(QString::fromStdString(i->key()),
+                                  QString::fromStdString(i->value().toString()));
     }
 
     return metadataContainer;
