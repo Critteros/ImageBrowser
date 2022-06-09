@@ -18,6 +18,9 @@ private slots:
     void saveImageModified();
     void loadExternalData();
 
+signals:
+    void dirChanged();
+
 private:
     QToolBar* toolBar;
 

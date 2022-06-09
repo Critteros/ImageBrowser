@@ -2,6 +2,7 @@
 #include "ToolBar.hpp"
 #include "MainWindow.hpp"
 #include <QDebug>
+#include <QFileDialog>
 
 
 ToolBar::ToolBar(MainWindow *mainWindow)
@@ -44,6 +45,7 @@ ToolBar::ToolBar(MainWindow *mainWindow)
 
 void ToolBar::openDir() {
     qDebug() << "Open Dir";
+     emit dirChanged();
 }
 
 void ToolBar::generateInfoFile() {

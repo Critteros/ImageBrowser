@@ -27,7 +27,7 @@ MainWindow::MainWindow() : QMainWindow() {
     m_splitter->setMinimumSize(MAIN_WIDGET_MIN_SIZE);
 
     QObject::connect(m_fileExplorer, &FileExplorer::fileClicked, m_metadataWidget, &MetadataWidget::onFileCLick);
-
+    QObject::connect(m_toolbar, &ToolBar::dirChanged,  m_fileExplorer, &FileExplorer::changeRootPath);
 
     setCentralWidget(m_splitter);
 }

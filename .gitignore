@@ -1,4 +1,4 @@
 build
 .idea/*
 !.idea/cmake.xml
-img/test.jpg
+img/testing
