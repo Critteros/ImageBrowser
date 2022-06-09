@@ -40,7 +40,7 @@ void FileExplorer::setupViews() {
                      &CustomIconProvider::onIconSizeChange);
 
     // Changing model root path will switch currently presented folder in view
-    QObject::connect(m_filesystemModel, &QFileSystemModel::rootPathChanged, [this](const QString &newPath) {
+    QObject::connect(m_filesystemModel, &QFileSystemModel::rootPathChanged, [this](const QString &newPath){
         m_listView->setRootIndex(m_filesystemModel->index(newPath));
     });
 
@@ -87,3 +87,6 @@ void FileExplorer::setIconSize(const QSize &newSize) {
     m_listView->setIconSize(newSize);
 }
 
+void FileExplorer::changeRootIndex(const QString &newPath) {
+    m_listView->setRootIndex(m_filesystemModel->index(newPath));
+}

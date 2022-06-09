@@ -22,11 +22,10 @@ public:
 
 private:
     void setupViews();
-
     void setupModels();
 
 public slots:
-
+    void changeRootIndex(const QString &newPath);
     void setIconSize(const QSize &newSize);
 
 signals:
