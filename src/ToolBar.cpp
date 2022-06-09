@@ -45,9 +45,7 @@ ToolBar::ToolBar(MainWindow *mainWindow)
 
 void ToolBar::openDir() {
     qDebug() << "Open Dir";
-    auto dirPath = QFileDialog::getExistingDirectory(dynamic_cast<QWidget *>(parent()), QString("Open Directory"), QDir::currentPath(),
-                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    emit dirChanged(dirPath);
+     emit dirChanged();
 }
 
 void ToolBar::generateInfoFile() {

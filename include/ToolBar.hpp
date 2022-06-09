@@ -19,7 +19,7 @@ private slots:
     void loadExternalData();
 
 signals:
-    void dirChanged(const QString &dirPath);
+    void dirChanged();
 
 private:
     QToolBar* toolBar;

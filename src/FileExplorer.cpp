@@ -1,6 +1,7 @@
 #include "FileExplorer.hpp"
 
 #include <QImageReader>
+#include <QFileDialog>
 
 FileExplorer::FileExplorer(QWidget *parent) : QStackedWidget(parent) {
     setupModels();
@@ -87,6 +88,11 @@ void FileExplorer::setIconSize(const QSize &newSize) {
     m_listView->setIconSize(newSize);
 }
 
-void FileExplorer::changeRootIndex(const QString &newPath) {
-    m_listView->setRootIndex(m_filesystemModel->index(newPath));
+void FileExplorer::changeRootPath() {
+    auto dirPath = QFileDialog::getExistingDirectory(dynamic_cast<QWidget *>(parent()),
+                                                     QString("Open Directory"),
+                                                        qvariant_cast<QString>(
+                                                                m_listView->rootIndex().data(QFileSystemModel::FilePathRole)),
+                                                            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    m_filesystemModel->setRootPath(dirPath);
 }

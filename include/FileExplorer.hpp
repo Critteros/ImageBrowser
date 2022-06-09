@@ -25,7 +25,7 @@ private:
     void setupModels();
 
 public slots:
-    void changeRootIndex(const QString &newPath);
+    void changeRootPath();
     void setIconSize(const QSize &newSize);
 
 signals:

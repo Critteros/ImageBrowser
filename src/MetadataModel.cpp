@@ -88,7 +88,7 @@ MetadataModel::ImageMetadata MetadataModel::loadImageMetadata(const QString &fil
     for (auto i = exifData.begin(); i != endExif; ++i) {
         value << i->value();
         metadataContainer.addExif(QString::fromStdString(i->key()), QString::fromStdString(value.str()));
-        value.clear();
+        value.str("");
     }
 
     // Iptc
@@ -101,8 +101,8 @@ MetadataModel::ImageMetadata MetadataModel::loadImageMetadata(const QString &fil
     auto endIptc = iptcData.end();
     for (auto i = iptcData.begin(); i != endIptc; ++i) {
         value << i->value();
-        metadataContainer.addExif(QString::fromStdString(i->key()), QString::fromStdString(value.str()));
-        value.clear();
+        metadataContainer.addIptc(QString::fromStdString(i->key()), QString::fromStdString(value.str()));
+        value.str("");
     }
 
     return metadataContainer;
