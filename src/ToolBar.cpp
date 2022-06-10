@@ -54,6 +54,7 @@ void ToolBar::generateInfoFile() {
 
 void ToolBar::saveImageModified() {
     qDebug() << "Save image modified";
+    emit onSaveImageClick();
 }
 
 void ToolBar::loadExternalData() {

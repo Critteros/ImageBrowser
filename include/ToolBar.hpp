@@ -20,6 +20,7 @@ private slots:
 
 signals:
     void dirChanged();
+    void onSaveImageClick();
 
 private:
     QToolBar* toolBar;

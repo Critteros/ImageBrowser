@@ -26,6 +26,7 @@ private:
 
 public slots:
     void changeRootPath();
+    void saveImageWithText();
     void setIconSize(const QSize &newSize);
 
 signals:

@@ -1,5 +1,7 @@
 #include "MetadataModel.hpp"
 
+#include "utils.hpp"
+
 #include <QFont>
 #include <QDebug>
 #include <exiv2/exiv2.hpp>
@@ -58,6 +60,7 @@ void MetadataModel::clearStoredMetadata() {
 }
 
 void MetadataModel::loadAndParseImage(const QString &filepath) {
+//    saveImageWithText(filepath, QStringList{"EXIF", "IPTC"});     // FOR TESTING
     qDebug() << "Loading image: " << filepath;
     beginResetModel();
 
