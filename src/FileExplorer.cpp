@@ -3,6 +3,7 @@
 #include <QImageReader>
 #include <QFileDialog>
 #include "TagSelectionDialog.hpp"
+#include "utils.hpp"
 
 FileExplorer::FileExplorer(QWidget *parent) : QStackedWidget(parent) {
     setupModels();
@@ -108,4 +109,38 @@ void FileExplorer::onUserCreateInfoFile() {
 
     TagSelectionDialog dialog(m_filesystemModel->rootPath(), UsageType::SAVE_IMAGE_DATA, this);
     dialog.exec();
+}
+
+void FileExplorer::onUserLoadExternalData() {
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    dialog.setNameFilter("Text FIle (*.txt)");
+
+
+    bool status = dialog.exec();
+
+    if (!status)
+        return;
+
+    QString filename = dialog.selectedFiles().front();
+
+    QFile fileHandle(filename);
+    fileHandle.open(QFile::ReadOnly | QFile::Text);
+
+
+    QTextStream in(&fileHandle);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+
+        auto tokens = line.split(" ");
+        QString imageName = tokens.front();
+
+        tokens.removeAt(0);
+        auto text = tokens.join(' ');
+
+        QFileInfo imageHandle(imageName);
+        if (imageHandle.exists()) {
+            ::saveImageWithText(imageHandle.absoluteFilePath(), text);
+        }
+    }
 }

@@ -30,6 +30,7 @@ MainWindow::MainWindow() : QMainWindow() {
     QObject::connect(m_toolbar, &ToolBar::dirChanged, m_fileExplorer, &FileExplorer::changeRootPath);
     QObject::connect(m_toolbar, &ToolBar::onSaveImageClick, m_fileExplorer, &FileExplorer::saveImageWithText);
     QObject::connect(m_toolbar, &ToolBar::onUserCreateInfoFile, m_fileExplorer, &FileExplorer::onUserCreateInfoFile);
+    QObject::connect(m_toolbar, &ToolBar::onLoadExternalData, m_fileExplorer, &FileExplorer::onUserLoadExternalData);
 
     setCentralWidget(m_splitter);
 }

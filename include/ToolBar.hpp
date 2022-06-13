@@ -31,6 +31,8 @@ signals:
 
     void onUserCreateInfoFile();
 
+    void onLoadExternalData();
+
 private:
     QToolBar *toolBar;
 

@@ -60,6 +60,8 @@ void ToolBar::saveImageModified() {
 
 void ToolBar::loadExternalData() {
     qDebug() << "Load external data";
+
+    emit onLoadExternalData();
 }
 
 ToolBar::~ToolBar() = default;

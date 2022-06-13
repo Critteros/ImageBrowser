@@ -175,7 +175,7 @@ void TagSelectionDialog::onSelectionChanged(const QItemSelection &newSelection, 
         QFileInfo fileInfo(m_filesystemModel->data(modelIndex, QFileSystemModel::FilePathRole).toString());
         qDebug() << "Adding" << fileInfo.fileName();
 
-        m_allFilesMetadata << MetadataForFile(fileInfo.absoluteFilePath(),
+        m_allFilesMetadata << MetadataForFile(fileInfo.fileName(),
                                               MetadataModel::loadImageMetadata(fileInfo.absoluteFilePath()));
         addWidgetButtons();
     }
