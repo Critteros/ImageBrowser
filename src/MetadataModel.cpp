@@ -70,35 +70,42 @@ MetadataModel::ImageMetadata MetadataModel::loadImageMetadata(const QString &fil
     // There extract metadata
     auto metadataContainer = MetadataModel::ImageMetadata();
 
-    auto image = Exiv2::ImageFactory::open(filepath.toStdString());
-    assert(image.get() != nullptr);
-    image->readMetadata();
+    qDebug() << filepath;
 
-    // Exif
-    auto& exifData = image->exifData();
-    if (exifData.empty()) {
-        qDebug() << "Empty EXIF";
-        metadataContainer.addExif("No Exif data found in the file", "");
+    try {
+        auto image = Exiv2::ImageFactory::open(filepath.toStdString());
+        assert(image.get() != nullptr);
+        image->readMetadata();
+
+        // Exif
+        auto &exifData = image->exifData();
+        if (exifData.empty()) {
+            qDebug() << "Empty EXIF";
+            metadataContainer.addExif("No Exif data found in the file", "");
+        }
+
+        auto endExif = exifData.end();
+        for (auto i = exifData.begin(); i != endExif; ++i) {
+            metadataContainer.addExif(QString::fromStdString(i->key()),
+                                      QString::fromStdString(i->value().toString()));
+        }
+
+        // Iptc
+        auto &iptcData = image->iptcData();
+        if (iptcData.empty()) {
+            qDebug() << "Empty IPTC";
+            metadataContainer.addIptc("No Iptc data found in the file", "");
+        }
+
+        auto endIptc = iptcData.end();
+        for (auto i = iptcData.begin(); i != endIptc; ++i) {
+            metadataContainer.addIptc(QString::fromStdString(i->key()),
+                                      QString::fromStdString(i->value().toString()));
+        }
+    } catch (std::exception &exception) {
+        qDebug() << exception.what();
     }
 
-    auto endExif = exifData.end();
-    for (auto i = exifData.begin(); i != endExif; ++i) {
-        metadataContainer.addExif(QString::fromStdString(i->key()),
-                                  QString::fromStdString(i->value().toString()));
-    }
-
-    // Iptc
-    auto& iptcData = image->iptcData();
-    if (iptcData.empty()) {
-        qDebug() << "Empty IPTC";
-        metadataContainer.addIptc("No Iptc data found in the file", "");
-    }
-
-    auto endIptc = iptcData.end();
-    for (auto i = iptcData.begin(); i != endIptc; ++i) {
-        metadataContainer.addIptc(QString::fromStdString(i->key()),
-                                  QString::fromStdString(i->value().toString()));
-    }
 
     return metadataContainer;
 }
