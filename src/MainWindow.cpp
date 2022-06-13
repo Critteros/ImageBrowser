@@ -28,6 +28,7 @@ MainWindow::MainWindow() : QMainWindow() {
 
     QObject::connect(m_fileExplorer, &FileExplorer::fileClicked, m_metadataWidget, &MetadataWidget::onFileCLick);
     QObject::connect(m_toolbar, &ToolBar::dirChanged,  m_fileExplorer, &FileExplorer::changeRootPath);
+    QObject::connect(m_toolbar, &ToolBar::onSaveImageClick, m_fileExplorer, &FileExplorer::saveImageWithText);
 
     setCentralWidget(m_splitter);
 }

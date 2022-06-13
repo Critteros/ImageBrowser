@@ -96,3 +96,7 @@ void FileExplorer::changeRootPath() {
                                                             QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     m_filesystemModel->setRootPath(dirPath);
 }
+
+void FileExplorer::saveImageWithText() {
+    // TODO: Implement
+}
