@@ -45,11 +45,12 @@ ToolBar::ToolBar(MainWindow *mainWindow)
 
 void ToolBar::openDir() {
     qDebug() << "Open Dir";
-     emit dirChanged();
+    emit dirChanged();
 }
 
 void ToolBar::generateInfoFile() {
     qDebug() << "Generate info File";
+    emit onUserCreateInfoFile();
 }
 
 void ToolBar::saveImageModified() {

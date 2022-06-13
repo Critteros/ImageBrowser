@@ -2,6 +2,7 @@
 
 #include <QImageReader>
 #include <QFileDialog>
+#include "InfoFileDialog.hpp"
 
 FileExplorer::FileExplorer(QWidget *parent) : QStackedWidget(parent) {
     setupModels();
@@ -41,7 +42,7 @@ void FileExplorer::setupViews() {
                      &CustomIconProvider::onIconSizeChange);
 
     // Changing model root path will switch currently presented folder in view
-    QObject::connect(m_filesystemModel, &QFileSystemModel::rootPathChanged, [this](const QString &newPath){
+    QObject::connect(m_filesystemModel, &QFileSystemModel::rootPathChanged, [this](const QString &newPath) {
         m_listView->setRootIndex(m_filesystemModel->index(newPath));
     });
 
@@ -91,12 +92,19 @@ void FileExplorer::setIconSize(const QSize &newSize) {
 void FileExplorer::changeRootPath() {
     auto dirPath = QFileDialog::getExistingDirectory(dynamic_cast<QWidget *>(parent()),
                                                      QString("Open Directory"),
-                                                        qvariant_cast<QString>(
-                                                                m_listView->rootIndex().data(QFileSystemModel::FilePathRole)),
-                                                            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                     qvariant_cast<QString>(
+                                                             m_listView->rootIndex().data(
+                                                                     QFileSystemModel::FilePathRole)),
+                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     m_filesystemModel->setRootPath(dirPath);
 }
 
 void FileExplorer::saveImageWithText() {
     // TODO: Implement
+}
+
+void FileExplorer::onUserCreateInfoFile() {
+    qDebug() << "Open dialog here";
+    InfoFileDialog dialog(m_filesystemModel->rootPath(), this);
+    dialog.exec();
 }

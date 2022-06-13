@@ -22,12 +22,18 @@ public:
 
 private:
     void setupViews();
+
     void setupModels();
 
 public slots:
+
     void changeRootPath();
+
     void saveImageWithText();
+
     void setIconSize(const QSize &newSize);
+
+    void onUserCreateInfoFile();
 
 signals:
 
