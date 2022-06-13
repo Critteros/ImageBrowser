@@ -34,6 +34,7 @@ public slots:
     void setIconSize(const QSize &newSize);
 
     void onUserCreateInfoFile();
+    
 
 signals:
 

@@ -11,13 +11,24 @@
 #include <QScrollArea>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QVBoxLayout>
+#include <QCheckBox>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QTextStream>
 
 #include "MetadataModel.hpp"
 #include "CustomIconProvider.hpp"
 
 #include "DebugHelpers.hpp"
 
-class InfoFileDialog : public QDialog {
+enum class UsageType {
+    SAVE_IMAGE_DATA,
+    ADD_TEXT_TO_IMAGES
+};
+
+class TagSelectionDialog : public QDialog {
 Q_OBJECT
 
     struct MetadataForFile {
@@ -35,16 +46,22 @@ Q_OBJECT
     };
 
 public:
-    explicit InfoFileDialog(const QString &rootPath, QWidget *parent = nullptr);
+    explicit TagSelectionDialog(const QString &rootPath, UsageType usageType, QWidget *parent = nullptr);
 
 public slots:
 
     void onSelectionChanged(const QItemSelection &newSelection, const QItemSelection &oldSelection);
 
-    void onSaveImages(bool);
+private slots:
+
+    void onSaveImageData(bool);
+
+    void onSaveImageWithText(bool);
 
 private:
     QSet<QString> getUniqueTagNames(TAG_TYPE type = TAG_EXIF) const;
+
+    QSet<QString> getSelectedTagNames(TAG_TYPE type = TAG_EXIF) const;
 
     void addWidgetButtons();
 
@@ -66,7 +83,7 @@ private:
     QPushButton *m_EXIF_deselectAllButton = nullptr;
     QPushButton *m_IPTC_selectAllButton = nullptr;
     QPushButton *m_IPTC_deselectAllButton = nullptr;
-    QPushButton *m_saveImagesButton = nullptr;
+    QPushButton *m_saveButton = nullptr;
     QPushButton *m_closeButton = nullptr;
 };
 

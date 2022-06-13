@@ -1,12 +1,11 @@
-#include "InfoFileDialog.hpp"
-
-#include <QVBoxLayout>
-#include <QCheckBox>
+#include "TagSelectionDialog.hpp"
 
 
 #include <algorithm>
+#include "utils.hpp"
 
-InfoFileDialog::InfoFileDialog(const QString &rootPath, QWidget *parent) : QDialog(parent) {
+TagSelectionDialog::TagSelectionDialog(const QString &rootPath, UsageType usageType, QWidget *parent) : QDialog(
+        parent) {
     setModal(true);
 
     m_filesystemModel = new QFileSystemModel(this);
@@ -30,7 +29,7 @@ InfoFileDialog::InfoFileDialog(const QString &rootPath, QWidget *parent) : QDial
     m_listView->setSelectionMode(QAbstractItemView::MultiSelection);
 
     QObject::connect(m_listView->selectionModel(), &QItemSelectionModel::selectionChanged, this,
-                     &InfoFileDialog::onSelectionChanged);
+                     &TagSelectionDialog::onSelectionChanged);
 
     //UI
 
@@ -120,12 +119,21 @@ InfoFileDialog::InfoFileDialog(const QString &rootPath, QWidget *parent) : QDial
     auto buttonsLayout = new QHBoxLayout;
     auto buttonsWidget = new QWidget;
     m_closeButton = new QPushButton("Close");
-    m_saveImagesButton = new QPushButton("Save Images");
-    buttonsLayout->addWidget(m_saveImagesButton);
+
+    if (usageType == UsageType::SAVE_IMAGE_DATA) {
+        m_saveButton = new QPushButton("Save Image Data");
+    } else if (usageType == UsageType::ADD_TEXT_TO_IMAGES) {
+        m_saveButton = new QPushButton("Save Images with Text");
+    }
+
+    buttonsLayout->addWidget(m_saveButton);
     buttonsLayout->addWidget((m_closeButton));
     buttonsWidget->setLayout(buttonsLayout);
 
-    QObject::connect(m_saveImagesButton, &QPushButton::clicked, this, &InfoFileDialog::onSaveImages);
+    if (usageType == UsageType::SAVE_IMAGE_DATA)
+        QObject::connect(m_saveButton, &QPushButton::clicked, this, &TagSelectionDialog::onSaveImageData);
+    else if (usageType == UsageType::ADD_TEXT_TO_IMAGES)
+        QObject::connect(m_saveButton, &QPushButton::clicked, this, &TagSelectionDialog::onSaveImageWithText);
     QObject::connect(m_closeButton, &QPushButton::clicked, this, [this](bool) {
         close();
     });
@@ -138,7 +146,7 @@ InfoFileDialog::InfoFileDialog(const QString &rootPath, QWidget *parent) : QDial
 
 }
 
-void InfoFileDialog::onSelectionChanged(const QItemSelection &newSelection, const QItemSelection &oldSelection) {
+void TagSelectionDialog::onSelectionChanged(const QItemSelection &newSelection, const QItemSelection &oldSelection) {
 
 
     //Check if something got remove
@@ -151,7 +159,7 @@ void InfoFileDialog::onSelectionChanged(const QItemSelection &newSelection, cons
 
         const auto target = std::find_if(std::cbegin(m_allFilesMetadata), std::cend(m_allFilesMetadata),
                                          [&fileInfo](const MetadataForFile &obj) {
-                                             return obj.filename == fileInfo.absoluteFilePath();
+                                             return obj.filename == fileInfo.fileName();
                                          });
 
         if (target != std::end(m_allFilesMetadata)) {
@@ -173,7 +181,7 @@ void InfoFileDialog::onSelectionChanged(const QItemSelection &newSelection, cons
     }
 }
 
-QSet<QString> InfoFileDialog::getUniqueTagNames(TAG_TYPE type) const {
+QSet<QString> TagSelectionDialog::getUniqueTagNames(TAG_TYPE type) const {
     QSet<QString> data;
 
     for (const auto &block: m_allFilesMetadata) {
@@ -193,7 +201,7 @@ QSet<QString> InfoFileDialog::getUniqueTagNames(TAG_TYPE type) const {
     return data;
 }
 
-void InfoFileDialog::addWidgetButtons() {
+void TagSelectionDialog::addWidgetButtons() {
     const auto EXIF_KEYS = getUniqueTagNames(TAG_EXIF);
     const auto IPTC_KEYS = getUniqueTagNames(TAG_IPTC);
 
@@ -229,8 +237,117 @@ void InfoFileDialog::addWidgetButtons() {
     m_EXIF_scroll->setWidget(m_EXIF_group);
 }
 
-void InfoFileDialog::onSaveImages(bool) {
-    qDebug() << "Save Images";
+void TagSelectionDialog::onSaveImageData(bool) {
 
+    const auto exif_keys = getSelectedTagNames(TAG_EXIF);
+    const auto iptc_keys = getSelectedTagNames(TAG_IPTC);
+
+    const QString filename = "saved_image_data.json";
+    QFile fileHandle{filename};
+
+    auto jsonHandle = QJsonDocument();
+    auto mainJsonArray = QJsonArray();
+
+
+    for (const auto &metadataFile: m_allFilesMetadata) {
+        const auto &metadataFilename = metadataFile.filename;
+        const auto &exifMetadata = metadataFile.metadata.EXIF_metadata;
+        const auto &iptcMetadata = metadataFile.metadata.IPTC_metadata;
+
+        auto fileJsonObject = QJsonObject();
+        fileJsonObject.insert("filename", metadataFilename);
+
+        auto exifMetadataArray = QJsonArray();
+        auto iptcMetadataArray = QJsonArray();
+
+        // EXIF
+        for (const auto &[key, value]: exifMetadata) {
+            if (exif_keys.contains(key)) {
+                auto jsonObject = QJsonObject();
+                jsonObject.insert("type", "EXIF");
+                jsonObject.insert("tag", key);
+                jsonObject.insert("value", value);
+                exifMetadataArray.append(jsonObject);
+            }
+        }
+
+        // IPTC
+        for (const auto &[key, value]: iptcMetadata) {
+            if (iptc_keys.contains(key)) {
+                auto jsonObject = QJsonObject();
+                jsonObject.insert("type", "IPTC");
+                jsonObject.insert("tag", key);
+                jsonObject.insert("value", value);
+
+                iptcMetadataArray.append(jsonObject);
+            }
+        }
+
+
+        fileJsonObject.insert("EXIF", exifMetadataArray);
+        fileJsonObject.insert("IPTC", iptcMetadataArray);
+
+        mainJsonArray.append(fileJsonObject);
+
+    }
+
+    jsonHandle.setArray(mainJsonArray);
+
+
+    auto dumpedJson = jsonHandle.toJson(QJsonDocument::Indented);
+    fileHandle.open(QFile::WriteOnly | QFile::Text);
+    fileHandle.write(dumpedJson);
+
+    close();
+}
+
+QSet<QString> TagSelectionDialog::getSelectedTagNames(TagSelectionDialog::TAG_TYPE type) const {
+    QSet<QString> data;
+
+    if (type == TAG_EXIF) {
+        for (const auto checkbox: m_exifButtons) {
+            if (checkbox->isChecked()) {
+                data.insert(checkbox->text());
+            }
+        }
+    } else if (type == TAG_IPTC) {
+        for (const auto checkbox: m_iptcButtons) {
+            if (checkbox->isChecked()) {
+                data.insert(checkbox->text());
+            }
+        }
+    }
+
+    return data;
+}
+
+void TagSelectionDialog::onSaveImageWithText(bool) {
+    const auto exif_keys = getSelectedTagNames(TAG_EXIF);
+    const auto iptc_keys = getSelectedTagNames(TAG_IPTC);
+
+
+    for (const auto &metadataFile: m_allFilesMetadata) {
+        const auto &metadataFilename = metadataFile.filename;
+        const auto &exifMetadata = metadataFile.metadata.EXIF_metadata;
+        const auto &iptcMetadata = metadataFile.metadata.IPTC_metadata;
+
+        QString s;
+        QTextStream ss(&s);
+
+        ss << "EXIF:\n";
+        for (const auto &[key, value]: exifMetadata) {
+            if (exif_keys.contains(key)) {
+                ss << key << ": " << value << '\n';
+            }
+        }
+        ss << "\nIPTC:";
+        for (const auto &[key, value]: iptcMetadata) {
+            if (iptc_keys.contains(key)) {
+                ss << key << ": " << value << '\n';
+            }
+        }
+
+        saveImageWithText(QFileInfo(metadataFilename).absoluteFilePath(), s);
+    }
     close();
 }

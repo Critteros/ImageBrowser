@@ -2,7 +2,7 @@
 
 #include <QImageReader>
 #include <QFileDialog>
-#include "InfoFileDialog.hpp"
+#include "TagSelectionDialog.hpp"
 
 FileExplorer::FileExplorer(QWidget *parent) : QStackedWidget(parent) {
     setupModels();
@@ -100,11 +100,12 @@ void FileExplorer::changeRootPath() {
 }
 
 void FileExplorer::saveImageWithText() {
-    // TODO: Implement
+    TagSelectionDialog dialog(m_filesystemModel->rootPath(), UsageType::ADD_TEXT_TO_IMAGES, this);
+    dialog.exec();
 }
 
 void FileExplorer::onUserCreateInfoFile() {
-    qDebug() << "Open dialog here";
-    InfoFileDialog dialog(m_filesystemModel->rootPath(), this);
+
+    TagSelectionDialog dialog(m_filesystemModel->rootPath(), UsageType::SAVE_IMAGE_DATA, this);
     dialog.exec();
 }
