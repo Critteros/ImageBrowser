@@ -4,24 +4,36 @@
 
 class MainWindow;
 
-class ToolBar : public QObject{
+class ToolBar : public QObject {
 
-    Q_OBJECT
+Q_OBJECT
 
 public:
-    explicit ToolBar(MainWindow* mainWindow);
+    explicit ToolBar(MainWindow *mainWindow);
+
     ~ToolBar() override;
 
 private slots:
+
     void openDir();
+
     void generateInfoFile();
+
     void saveImageModified();
+
     void loadExternalData();
 
 signals:
+
     void dirChanged();
 
+    void onSaveImageClick();
+
+    void onUserCreateInfoFile();
+
+    void onLoadExternalData();
+
 private:
-    QToolBar* toolBar;
+    QToolBar *toolBar;
 
 };

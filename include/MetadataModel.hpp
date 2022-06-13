@@ -16,7 +16,7 @@ Q_OBJECT
         FIELD_KEY = 0,
         FIELD_VALUE
     };
-
+public:
     struct ImageMetadata {
         using KVList = QList<QPair<QString, QString>>;
 

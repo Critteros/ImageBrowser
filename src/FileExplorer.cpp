@@ -2,6 +2,8 @@
 
 #include <QImageReader>
 #include <QFileDialog>
+#include "TagSelectionDialog.hpp"
+#include "utils.hpp"
 
 FileExplorer::FileExplorer(QWidget *parent) : QStackedWidget(parent) {
     setupModels();
@@ -41,7 +43,7 @@ void FileExplorer::setupViews() {
                      &CustomIconProvider::onIconSizeChange);
 
     // Changing model root path will switch currently presented folder in view
-    QObject::connect(m_filesystemModel, &QFileSystemModel::rootPathChanged, [this](const QString &newPath){
+    QObject::connect(m_filesystemModel, &QFileSystemModel::rootPathChanged, [this](const QString &newPath) {
         m_listView->setRootIndex(m_filesystemModel->index(newPath));
     });
 
@@ -91,8 +93,54 @@ void FileExplorer::setIconSize(const QSize &newSize) {
 void FileExplorer::changeRootPath() {
     auto dirPath = QFileDialog::getExistingDirectory(dynamic_cast<QWidget *>(parent()),
                                                      QString("Open Directory"),
-                                                        qvariant_cast<QString>(
-                                                                m_listView->rootIndex().data(QFileSystemModel::FilePathRole)),
-                                                            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                     qvariant_cast<QString>(
+                                                             m_listView->rootIndex().data(
+                                                                     QFileSystemModel::FilePathRole)),
+                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     m_filesystemModel->setRootPath(dirPath);
+}
+
+void FileExplorer::saveImageWithText() {
+    TagSelectionDialog dialog(m_filesystemModel->rootPath(), UsageType::ADD_TEXT_TO_IMAGES, this);
+    dialog.exec();
+}
+
+void FileExplorer::onUserCreateInfoFile() {
+
+    TagSelectionDialog dialog(m_filesystemModel->rootPath(), UsageType::SAVE_IMAGE_DATA, this);
+    dialog.exec();
+}
+
+void FileExplorer::onUserLoadExternalData() {
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    dialog.setNameFilter("Text FIle (*.txt)");
+
+
+    bool status = dialog.exec();
+
+    if (!status)
+        return;
+
+    QString filename = dialog.selectedFiles().front();
+
+    QFile fileHandle(filename);
+    fileHandle.open(QFile::ReadOnly | QFile::Text);
+
+
+    QTextStream in(&fileHandle);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+
+        auto tokens = line.split(" ");
+        QString imageName = tokens.front();
+
+        tokens.removeAt(0);
+        auto text = tokens.join(' ');
+
+        QFileInfo imageHandle(imageName);
+        if (imageHandle.exists()) {
+            ::saveImageWithText(imageHandle.absoluteFilePath(), text);
+        }
+    }
 }
