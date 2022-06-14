@@ -138,7 +138,8 @@ void FileExplorer::onUserLoadExternalData() {
         tokens.removeAt(0);
         auto text = tokens.join(' ');
 
-        QFileInfo imageHandle(imageName);
+        const QString filepath = QDir(m_filesystemModel->rootDirectory()).absoluteFilePath(imageName);
+        QFileInfo imageHandle(filepath);
         if (imageHandle.exists()) {
             ::saveImageWithText(imageHandle.absoluteFilePath(), text);
         }
