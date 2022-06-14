@@ -242,8 +242,10 @@ void TagSelectionDialog::onSaveImageData(bool) {
     const auto exif_keys = getSelectedTagNames(TAG_EXIF);
     const auto iptc_keys = getSelectedTagNames(TAG_IPTC);
 
-    const QString filename = "saved_image_data.json";
+//    const QString filename = "saved_image_data.json";
+    const QString filename = QDir(m_filesystemModel->rootDirectory()).absoluteFilePath("saved_image_data.json");
     QFile fileHandle{filename};
+
 
     auto jsonHandle = QJsonDocument();
     auto mainJsonArray = QJsonArray();
@@ -346,8 +348,8 @@ void TagSelectionDialog::onSaveImageWithText(bool) {
                 ss << key << ": " << value << '\n';
             }
         }
-
-        saveImageWithText(QFileInfo(metadataFilename).absoluteFilePath(), s);
+        const QString filepath = QDir(m_filesystemModel->rootDirectory()).absoluteFilePath(metadataFilename);
+        saveImageWithText(filepath, s);
     }
     close();
 }
