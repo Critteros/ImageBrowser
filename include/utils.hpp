@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QImageReader>
 #include <QFileInfo>
+#include <QPalette>
 
 inline void saveImageWithText(const QString &pathToFile, const QString &multilineTextString) {
     // Concatenate into one
@@ -25,11 +26,13 @@ inline bool checkIfImage(const QString &filepath) {
     if (QFileInfo(filepath).isDir()) {
         return false;
     } else {
-
         if (!QImageReader(filepath).format().isEmpty())
             return true;
-
     }
-
     return false;
+}
+
+inline QPalette getPalette(){
+    QPalette palette(QColor("#424c55"), QColor("#424c55"));
+    return palette;
 }

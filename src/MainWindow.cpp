@@ -20,10 +20,6 @@ MainWindow::MainWindow() : QMainWindow() {
     m_splitter->setStretchFactor(0, 4);
     m_splitter->setStretchFactor(1, 2);
 
-    // Setting Palette
-    QPalette mainPalette(QColor("#f5edf0"), QColor("#424c55")); // IDK ale działa (Potem pobawie się w ładny wygląd)
-    setPalette(mainPalette);
-
     m_splitter->setMinimumSize(MAIN_WIDGET_MIN_SIZE);
 
     QObject::connect(m_fileExplorer, &FileExplorer::fileClicked, m_metadataWidget, &MetadataWidget::onFileCLick);
