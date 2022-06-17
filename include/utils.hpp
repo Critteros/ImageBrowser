@@ -9,11 +9,10 @@
 #include <QPalette>
 
 inline void saveImageWithText(const QString &pathToFile, const QString &multilineTextString) {
-    // Concatenate into one
     auto image = QImage(pathToFile);
     auto painter = QPainter(&image);
     painter.setPen(QPen(Qt::black));
-    painter.setFont(QFont("Times", 4));
+    painter.setFont(QFont("Times", 4*(qMin(image.width(), image.height())/200)));
     painter.drawText(image.rect(), Qt::AlignTop | Qt::AlignLeft, multilineTextString);
     // Add "Copy" to filename
     auto splitted = pathToFile.split(".");
