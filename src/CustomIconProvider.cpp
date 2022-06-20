@@ -2,6 +2,8 @@
 
 #include <QDir>
 
+#include "utils.hpp"
+
 CustomIconProvider::CustomIconProvider(QObject *parent) : QFileIconProvider(), QObject(parent) {
 
 }
@@ -13,12 +15,14 @@ QIcon CustomIconProvider::icon(const QFileInfo &info) const {
         return QFileIconProvider::icon(QFileInfo(info.absoluteFilePath()));
     }
 
-    if (m_thumbExtensions.contains(info.completeSuffix().toLower())) {
+//    if (m_thumbExtensions.contains(info.completeSuffix().toLower())) {
+    if (checkIfImage(info.absoluteFilePath())) {
+
         qDebug() << "Thumbnail for" << info.fileName();
         const auto filePath = info.filePath();
         QPixmap pixmap(m_thumbSize);
         pixmap.load(filePath);
-        
+
         return {pixmap};
     }
 

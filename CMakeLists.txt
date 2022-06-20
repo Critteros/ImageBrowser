@@ -24,7 +24,7 @@ include_directories("include")
 file(GLOB includes include/*.hpp)
 file(GLOB sources src/*.cpp)
 
-qt_add_executable(ImageBrowser imagebrowser.qrc ${includes} ${sources})
+qt_add_executable(ImageBrowser imagebrowser.qrc ${includes} ${sources} icon.rc)
 #qt_add_executable(ImageBrowser src/main.cpp)
 target_link_libraries(ImageBrowser PRIVATE
         Qt::Core
@@ -35,7 +35,15 @@ target_link_libraries(ImageBrowser PRIVATE
         Psapi.lib
         )
 
-target_link_options(ImageBrowser PRIVATE /FORCE:MULTIPLE)
+if (MSVC)
+
+    target_link_options(ImageBrowser PRIVATE /FORCE:MULTIPLE)
+
+endif ()
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    set_property(TARGET ImageBrowser PROPERTY WIN32_EXECUTABLE true)
+endif ()
 
 #target_compile_definitions(ImageBrowser PRIVATE $<$<CONFIG:Debug>:_CRTDBG_MAP_ALLOC>>)
 

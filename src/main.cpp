@@ -5,10 +5,8 @@
 #include <QStyleFactory>
 
 
-
-int main(int argc, char* argv[])
-{
-    _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+int main(int argc, char *argv[]) {
+    _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
     QApplication application(argc, argv);
     QApplication::setStyle(QStyleFactory::create("Fusion"));
@@ -19,4 +17,8 @@ int main(int argc, char* argv[])
 
     int result = QApplication::exec();
     return result;
+}
+
+int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char *, int nShowCmd) {
+    return main(__argc, __argv);
 }
